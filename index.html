@@ -73,7 +73,30 @@
     // ❗ Debug properly using the Console
 
     // 👉 CHALLENGE 1
-    function profileActivation() {
+  function profileActivation(profile, reason) {
+  if (!profile || !profile.hasOwnProperty('active')) {
+    return "impossible to ascertain status";
+  }
+
+  if (profile.active) {
+    if (profile.hasOwnProperty('reason')) {
+      return "confirm status manually";
+    } else {
+      profile.active = false;
+      profile.reason = reason;
+      return profile;
+    }
+  } else {
+    if (!profile.hasOwnProperty('reason')) {
+      return "confirm status manually";
+    } else {
+      delete profile.reason;
+      profile.active = true;
+      return profile;
+    }
+  }
+
+
       // 🧠 profileActivation takes two arguments, profile and reason, which are an object and a string respectively
       //  The reason arg is only used -and therefore required- to deactivate profiles, not to activate them
       //  The profile arg has an `active` property holding a Boolean value
@@ -88,7 +111,20 @@
     }
 
     // 👉 CHALLENGE 2
-    function mineSweeper() {
+  function mineSweeper(grid, x, y) {
+  if (x < 1 || x > 3 || y < 1 || y > 3) {
+    return "invalid coordinates";
+  }
+
+  const square = grid[y - 1][x - 1];
+
+  if (square === "🟥") {
+    return "🟥 💀";
+  } else {
+    return "🟦 🥳";
+  }
+
+
       // 🧠 mineSweeper takes a grid as its first argument, and coordinates x and y as the second and third args
       //  The grid is an array of arrays in the following format: [["🟥","🟦","🟥"],["🟦","🟥","🟥"],["🟥","🟦","🟦"]]
       //  Each subarray is a row of the grid, the first subarray being the top row:
@@ -107,9 +143,29 @@
       // 🧠 Edge cases:
       //    * If the x or y coordinates are under 1 or over 3, return the string "invalid coordinates"
     }
-
     // 👉 CHALLENGE 3
-    function booleanize() {
+    function booleanize(obj) {
+  const result = {};
+
+  for (let key in obj) {
+    if (key.length > 9) {
+      return "shorten all prop names to 9 chars or less";
+    }
+
+    const value = obj[key];
+
+    if (value === 0) {
+      result[key] = false;
+    } else if (value === 1) {
+      result[key] = true;
+    } else if (value !== null) {
+      result[key] = value;
+    }
+  }
+
+  return result;
+
+
       // 🧠 booleanize takes an object as its single argument, which can have any number of properties
       // Loop over the properties and then return the object, after applying the following transformations:
       //    * If a value is the number zero, it must be transformed into the Boolean false
@@ -121,7 +177,22 @@
     }
 
     // 👉 CHALLENGE 4
-    function scrub() {
+    function scrub(text, forbidden) {
+  if (text === "") {
+    return "";
+  }
+
+  const words = text.split(" ");
+
+  for (let i = 0; i < words.length; i++) {
+    if (forbidden.includes(words[i])) {
+      words[i] = "x".repeat(words[i].length);
+    }
+  }
+
+  return words.join(" ");
+
+
       // 🧠 scrub takes a string "text" as its first argument, and an array of forbidden words "forbidden" as its second
       // Any word in the text included in the array of forbidden words is replaced with a word of equal length but made of lowcase "x"
       // The scrubbed text is then returned from the function, as seen in the examples below
@@ -136,7 +207,35 @@
     }
 
     // 👉 CHALLENGE 5
-    function normalizePhoneNumber() {
+    function normalizePhoneNumber(number) {
+  if (number.length !== 10) {
+    return "type a 10-digit number";
+  }
+
+  for (let i = 0; i < number.length; i++) {
+    const currentChar = number[i];
+    if (isNaN(currentChar) || !Number.isInteger(Number(currentChar))) {
+      return "invalid phone number";
+    }
+  }
+
+  const template = "(XXX) XXX-XXXX";
+  let result = "";
+
+  let numberIndex = 0;
+  for (let i = 0; i < template.length; i++) {
+    if (template[i] === "X") {
+      result += number[numberIndex];
+      numberIndex++;
+    } else {
+      result += template[i];
+    }
+  }
+
+  return result;
+
+
+
       // 🧠 normalizePhoneNumber takes a string as its only argument, representing a ten-digit number
       // The function returns a string formatted as seen below
       // 🧠 Examples of usage:
@@ -152,6 +251,26 @@
 
     // 👉 CHALLENGE 6 (bonus, NOT graded)
     function diceRolls() {
+  let throws = 0;
+  let consecutiveSixes = 0;
+
+  while (true) {
+    throws++;
+    const roll = Math.floor(Math.random() * 6) + 1;
+
+    if (roll === 6) {
+      consecutiveSixes++;
+
+      if (consecutiveSixes === 3) {
+        return throws;
+      }
+    } else {
+      consecutiveSixes = 0;
+    }
+  }
+
+
+
       // 🧠 diceRolls takes no arguments and returns a number
       // The function throws a six-sided dice until 3 sixes in a row are obtained
       // The number of throws it took to obtain that third-in-a-row six is then returned from the function
